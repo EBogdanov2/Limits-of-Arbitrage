@@ -1,0 +1,24 @@
+{{ block title }}Arbitrage Limits Simulation{{ endblock }}
+{{ block content }}
+
+    <p>
+        You will be trading one stock in a fictitious market on behalf of investors into your fund.
+        Please read and understand the following parameters: <br>
+        <br>
+        You have a set amount of funds with which to trade <br>
+        Your investors will have a loss tolerance for losses of some percent
+        You know with 100% certainty that the true value of the stock will be reached <br>
+        <br>
+        You will be presented with 5 rounds of trading, in which the last round the stock reaches it's true value.
+        You may buy as many units of the stock as you have funds in that time period. You may sell any amount of the
+        stock at the start of a time period. <br>
+        <br>
+        Your investors will pull their funding if your funds at the start of the period are below your initial funds
+        multiplied by the loss tolerance of investors. <br>
+        <br>
+        If you are liquidated by investors you will earn 0. Otherwise you will earn your profit in the last time period
+        divided by 20, rounded up to nearest dollar.
+    </p>
+
+    {{ next_button }}
+{{ endblock }}
