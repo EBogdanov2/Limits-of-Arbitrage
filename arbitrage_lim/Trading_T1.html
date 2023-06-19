@@ -35,15 +35,36 @@
       background-color: #f44336;
       color: white;
     }
+
+    ol {
+    padding: 10px;
+    list-style-type: decimal;
+
+    }
+    ol li {
+        float: left;
+        font-size: 2em;
+        margin: 0 10px;
+        padding: 0 10px;
+        list-style-type: none;
+
+    }
+
     </style>
-    {{ player.price }} <br>
-    {{ player.investment }} <br>
-    {{ player.portfolio }}
-    {{ formfields }}
+
+    <ol>
+        <li>Portfolio Value: {{ player.portfolio }}</li>
+        <li>Shares: {{ player.investment }}</li>
+        <li>Cash on Hand: {{ player.funds }}</li>
+    </ol>
+
+    <br><p>Current Price: {{ player.price }}</p>
+    <br>{{ formfields }}
 
 
-    <button class="button buttonbuy" name="BUY" value="b">BUY</button>
-    <button class="button buttonsell" name="SELL" value="s">SELL</button>
+
+    <button class="button buttonbuy" name="shares" value="investment">BUY</button>
+    <button class="button buttonsell" name="shares" value="-investment">SELL</button>
 
     {{ next_button }}
 {{ endblock }}

@@ -30,13 +30,14 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     investment = models.IntegerField(
-        choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        min = 0,
+        max = C.INIT_FUND/C.INIT_PRICE
     )
     price = models.IntegerField()
-    shares = models.IntegerField(init = 0)
-    funds = models.IntegerField(init = C.INIT_FUND)
-    shareval = models.IntegerField(init = 0)
-    portfolio = models.IntegerField(init = 0)
+    shares = models.IntegerField(initial = 0)
+    funds = models.IntegerField(initial = C.INIT_FUND)
+    shareval = models.IntegerField(initial = 0)
+    portfolio = models.IntegerField(initial = 0)
     withdraw = models.IntegerField()
 
 def pricechange():
@@ -72,20 +73,45 @@ def changevals(player):
     rnd = player.round_number
     prev = rnd - 1
 
-    currprice(player)
+    if rnd == 1:
+        player.investment = player.investment
+        player.funds = player.funds - player.investment * player.price
+        player.shareval = player.investment * player.price
+        player.portfolio = player.shareval + player.funds
 
-    player.investment = player.in_round(1).investment
-    player.funds = C.INIT_FUND - player.in_round(1).investment * player.in_round(1).price
-    player.shareval = player.investment * player.price
-    player.portfolio = player.shareval + player.funds
+    else:
+        if player.investment != 0:
+            player.investment = player.in_round(prev).investment + player.investment
+            player.funds = player.in_round(prev).funds - player.investment * player.price
+            player.shareval = player.investment * player.price
+            player.portfolio = player.shareval + player.funds
+        else:
+            player.investment = player.in_round(prev).investment
+            player.funds = player.in_round(prev).funds
+            player.shareval = player.investment * player.price
+            player.portfolio = player.shareval + player.funds
+
 
     checkwithdraw(player)
+
+def prevvals(player):
+    rnd = player.round_number
+    prev = rnd - 1
+
+    currprice(player)
+
+    player.investment = player.in_round(prev).investment
+    player.funds = player.in_round(prev).funds
+    player.shareval = player.in_round(prev).shareval
+    player.portfolio = player.in_round(prev).portfolio
+
 
 def checkwithdraw(player):
     if player.portfolio < C.INIT_FUND*C.INVESTOR_PRESSURE:
         player.withdraw = True
     else:
         player.withdraw = False
+
 
 
 #class Changes(ExtraModel):
@@ -104,7 +130,11 @@ class Trading_T1(Page):
         if player.round_number == 1:
             initvals(player)
         else:
-            changevals(player)
+            prevvals(player)
+
+    @staticmethod
+    def before_next_page(player, timeout_happened):
+        changevals(player)
 
 
 class Liquidation(Page):
